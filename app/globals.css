@@ -1,26 +1,237 @@
 @import "tailwindcss";
+@import "tw-animate-css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* TrustSec Brand Colors */
+  --color-trustsec-1: var(--trustsec-1);
+  --color-trustsec-2: var(--trustsec-2);
+  --color-trustsec-3: var(--trustsec-3);
+
+  /* Base Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+
+  /* Fonts */
+  --font-sans: var(--font-montserrat);
   --font-mono: var(--font-geist-mono);
+  --font-montserrat: var(--font-montserrat);
+
+  /* Sidebar Colors */
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+
+  /* Chart Colors */
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+
+  /* UI Element Colors */
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+
+  /* Accent Colors */
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+
+  /* Muted Colors */
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+
+  /* Secondary Colors */
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+
+  /* Primary Colors */
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+
+  /* Popover Colors */
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+
+  /* Card Colors */
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  /* Border Radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  --radius: 0.625rem;
+
+  /* TrustSec Brand Colors */
+  --trustsec-1: #080056;
+  /* Deep Navy Blue - Primary Brand Color */
+  --trustsec-2: #114ef6;
+  /* Bright Blue - Secondary Brand Color */
+  --trustsec-3: #01d5e1;
+  /* Cyan/Turquoise - Accent Color */
+
+  /* Base Colors */
+  --background: oklch(1 0 0);
+  /* White */
+  --foreground: oklch(0.145 0 0);
+  /* Near Black */
+
+  /* Card Colors */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+
+  /* Popover Colors */
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+
+  /* Primary Colors - Using TrustSec Navy */
+  --primary: #080056;
+  /* TrustSec Navy */
+  --primary-foreground: oklch(1 0 0);
+  /* White */
+
+  /* Secondary Colors - Using TrustSec Blue */
+  --secondary: #114ef6;
+  /* TrustSec Blue */
+  --secondary-foreground: oklch(1 0 0);
+  /* White */
+
+  /* Muted Colors */
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+
+  /* Accent Colors - Using TrustSec Cyan */
+  --accent: #01d5e1;
+  /* TrustSec Cyan */
+  --accent-foreground: #080056;
+  /* TrustSec Navy */
+
+  /* Destructive Colors */
+  --destructive: oklch(0.577 0.245 27.325);
+
+  /* Border & Input */
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: #01d5e1;
+  /* TrustSec Cyan for focus rings */
+
+  /* Chart Colors - TrustSec themed */
+  --chart-1: #114ef6;
+  /* TrustSec Blue */
+  --chart-2: #01d5e1;
+  /* TrustSec Cyan */
+  --chart-3: #080056;
+  /* TrustSec Navy */
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+
+  /* Sidebar Colors - TrustSec themed */
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: #080056;
+  /* TrustSec Navy */
+  --sidebar-primary: #080056;
+  /* TrustSec Navy */
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: #01d5e1;
+  /* TrustSec Cyan */
+  --sidebar-accent-foreground: #080056;
+  /* TrustSec Navy */
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: #01d5e1;
+  /* TrustSec Cyan */
+}
+
+.dark {
+  /* Base Colors - Dark Mode */
+  --background: #080056;
+  /* TrustSec Navy for dark background */
+  --foreground: oklch(0.985 0 0);
+  /* White */
+
+  /* Card Colors */
+  --card: #0a0068;
+  /* Slightly lighter navy */
+  --card-foreground: oklch(0.985 0 0);
+
+  /* Popover Colors */
+  --popover: #0a0068;
+  --popover-foreground: oklch(0.985 0 0);
+
+  /* Primary Colors */
+  --primary: #01d5e1;
+  /* TrustSec Cyan (inverted for dark mode) */
+  --primary-foreground: #080056;
+  /* TrustSec Navy */
+
+  /* Secondary Colors */
+  --secondary: #114ef6;
+  /* TrustSec Blue */
+  --secondary-foreground: oklch(1 0 0);
+  /* White */
+
+  /* Muted Colors */
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+
+  /* Accent Colors */
+  --accent: #01d5e1;
+  /* TrustSec Cyan */
+  --accent-foreground: oklch(1 0 0);
+  /* White */
+
+  /* Destructive Colors */
+  --destructive: oklch(0.704 0.191 22.216);
+
+  /* Border & Input */
+  --border: rgba(1, 213, 225, 0.2);
+  /* TrustSec Cyan with opacity */
+  --input: rgba(1, 213, 225, 0.15);
+  --ring: #01d5e1;
+  /* TrustSec Cyan */
+
+  /* Chart Colors - Dark Mode */
+  --chart-1: #114ef6;
+  /* TrustSec Blue */
+  --chart-2: #01d5e1;
+  /* TrustSec Cyan */
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+
+  /* Sidebar Colors - Dark Mode */
+  --sidebar: #080056;
+  /* TrustSec Navy */
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: #114ef6;
+  /* TrustSec Blue */
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: #01d5e1;
+  /* TrustSec Cyan */
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: rgba(1, 213, 225, 0.2);
+  --sidebar-ring: #01d5e1;
+  /* TrustSec Cyan */
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
   }
-}
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-background text-foreground;
+  }
 }
