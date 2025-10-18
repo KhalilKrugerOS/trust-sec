@@ -8,6 +8,7 @@
   --color-trustsec-1: var(--trustsec-1);
   --color-trustsec-2: var(--trustsec-2);
   --color-trustsec-3: var(--trustsec-3);
+  --color-trustsec-widget: var(--trustsec-widget);
 
   /* Base Colors */
   --color-background: var(--background);
@@ -82,6 +83,8 @@
   /* Bright Blue - Secondary Brand Color */
   --trustsec-3: #01d5e1;
   /* Cyan/Turquoise - Accent Color */
+  --trustsec-widget: #272067;
+  /* Purple Widget Background for Dark Mode */
 
   /* Base Colors */
   --background: oklch(1 0 0);
@@ -162,12 +165,13 @@
   /* White */
 
   /* Card Colors */
-  --card: #0a0068;
-  /* Slightly lighter navy */
+  --card: #272067;
+  /* TrustSec Widget Purple - matches Figma design */
   --card-foreground: oklch(0.985 0 0);
 
   /* Popover Colors */
-  --popover: #0a0068;
+  --popover: #272067;
+  /* TrustSec Widget Purple */
   --popover-foreground: oklch(0.985 0 0);
 
   /* Primary Colors */
