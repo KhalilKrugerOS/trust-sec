@@ -10,8 +10,8 @@ const cardVariants = cva(
     {
         variants: {
             variant: {
-                default: "bg-white",
-                outlined: "bg-white border border-trustsec-2 shadow-lg pb-[104px]",
+                default: "bg-card text-card-foreground border border-border",
+                outlined: "bg-card text-card-foreground border border-trustsec-2 shadow-lg pb-[104px]",
             },
         },
         defaultVariants: {
@@ -133,7 +133,7 @@ const Card = React.forwardRef<
     <div
         ref={ref}
         className={cn(
-            "rounded-[13.5px] bg-white shadow-sm",
+            "rounded-[13.5px] bg-card text-card-foreground shadow-sm border border-border",
             className
         )}
         {...props}
@@ -174,7 +174,7 @@ const CardDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
     <p
         ref={ref}
-        className={cn("text-sm text-slate-500", className)}
+        className={cn("text-sm text-muted-foreground", className)}
         {...props}
     />
 ))

@@ -1,7 +1,21 @@
+import Image from "next/image";
+import BackgroundImage from "@/public/trust_sec_background.jpg";
+
 export default function Packs() {
     return (
-        <section className="py-20 px-4 bg-white">
-            <div className="container mx-auto max-w-7xl">
+        <section className="relative py-20 px-4 overflow-hidden">
+            {/* Background Image */}
+            <Image
+                src={BackgroundImage}
+                alt="Background"
+                fill
+                className="object-cover -z-20"
+            />
+            
+            {/* Light overlay */}
+            <div className="absolute inset-0 bg-white/90 dark:bg-trustsec-1/90 -z-10" />
+            
+            <div className="container mx-auto max-w-7xl relative z-10">
                 {/* Section Title */}
                 <div className="text-center mb-16">
                     <h2 className="text-trustsec-1 font-black text-6xl md:text-7xl uppercase mb-4">
@@ -15,13 +29,13 @@ export default function Packs() {
                 {/* Packs Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
                     {/* Initiation Pack */}
-                    <div className="relative rounded-3xl overflow-hidden min-h-[700px]">
+                    <div className="relative backdrop-blur-xl rounded-3xl overflow-hidden min-h-[700px] border border-trustsec-3/20 shadow-2xl">
                         {/* Gradient Background */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#114ef6] via-[#080056] to-[#01d5e1]"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#114ef6]/80 via-[#080056]/80 to-[#01d5e1]/80"></div>
 
                         {/* Decorative Circles */}
-                        <div className="absolute top-0 right-0 w-96 h-96 bg-[#01d5e1] rounded-full blur-3xl opacity-30"></div>
-                        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#114ef6] rounded-full blur-3xl opacity-30"></div>
+                        <div className="absolute top-0 right-0 w-96 h-96 bg-[#01d5e1] rounded-full blur-3xl opacity-20"></div>
+                        <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#114ef6] rounded-full blur-3xl opacity-20"></div>
 
                         {/* Content */}
                         <div className="relative z-10 h-full flex flex-col items-center justify-between p-8 text-center">
@@ -64,13 +78,13 @@ export default function Packs() {
                     </div>
 
                     {/* Professional Pack */}
-                    <div className="relative rounded-3xl overflow-hidden min-h-[700px]">
+                    <div className="relative backdrop-blur-xl rounded-3xl overflow-hidden min-h-[700px] border border-trustsec-3/20 shadow-2xl">
                         {/* Gradient Background */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#01d5e1] via-[#114ef6] to-[#080056]"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#01d5e1]/80 via-[#114ef6]/80 to-[#080056]/80"></div>
 
                         {/* Decorative Circles */}
-                        <div className="absolute top-0 left-0 w-96 h-96 bg-[#114ef6] rounded-full blur-3xl opacity-30"></div>
-                        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#01d5e1] rounded-full blur-3xl opacity-30"></div>
+                        <div className="absolute top-0 left-0 w-96 h-96 bg-[#114ef6] rounded-full blur-3xl opacity-20"></div>
+                        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#01d5e1] rounded-full blur-3xl opacity-20"></div>
 
                         {/* Content */}
                         <div className="relative z-10 h-full flex flex-col items-center justify-between p-8 text-center">

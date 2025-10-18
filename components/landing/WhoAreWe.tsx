@@ -1,7 +1,21 @@
+import Image from "next/image";
+import BackgroundImage from "@/public/trust_sec_background.jpg";
+
 export default function WhoAreWe() {
     return (
-        <section className="py-20 px-4 bg-white">
-            <div className="container mx-auto max-w-7xl">
+        <section className="relative py-20 px-4 overflow-hidden">
+            {/* Background Image */}
+            <Image
+                src={BackgroundImage}
+                alt="Background"
+                fill
+                className="object-cover -z-20"
+            />
+            
+            {/* Light overlay for readability */}
+            <div className="absolute inset-0 bg-white/90 dark:bg-trustsec-1/90 -z-10" />
+            
+            <div className="container mx-auto max-w-7xl relative z-10">
                 {/* Section Title */}
                 <div className="text-center mb-16">
                     <h2 className="text-trustsec-1 font-black text-6xl md:text-7xl uppercase mb-4">
@@ -15,10 +29,10 @@ export default function WhoAreWe() {
                 {/* Content Grid */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     {/* Certified Training Card */}
-                    <div className="relative bg-gradient-to-br from-[#121212] via-[#114ef6]/20 to-[#114ef6]/40 rounded-3xl overflow-hidden min-h-[500px] p-8">
+                    <div className="relative backdrop-blur-xl bg-gradient-to-br from-[#121212]/80 via-[#114ef6]/30 to-[#114ef6]/50 border border-trustsec-3/20 rounded-3xl overflow-hidden min-h-[500px] p-8 shadow-2xl">
                         {/* Decorative Gradients */}
-                        <div className="absolute top-0 left-0 w-64 h-64 bg-[#114ef6] rounded-full blur-3xl opacity-30"></div>
-                        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#114ef6] rounded-full blur-3xl opacity-20"></div>
+                        <div className="absolute top-0 left-0 w-64 h-64 bg-[#114ef6] rounded-full blur-3xl opacity-20"></div>
+                        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#114ef6] rounded-full blur-3xl opacity-15"></div>
 
                         {/* Content */}
                         <div className="relative z-10 flex flex-col md:flex-row gap-8 items-center h-full">
@@ -56,12 +70,12 @@ export default function WhoAreWe() {
                     </div>
 
                     {/* Why Choose Us Card */}
-                    <div className="relative rounded-3xl overflow-hidden min-h-[500px]">
+                    <div className="relative backdrop-blur-xl rounded-3xl overflow-hidden min-h-[500px] border border-trustsec-3/20 shadow-2xl">
                         {/* Background Image with Gradient Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-br from-[#01d5e1]/50 via-transparent to-transparent">
-                            <div className="absolute inset-0 bg-gradient-to-r from-black/65 to-black/65"></div>
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#01d5e1]/40 via-transparent to-transparent">
+                            <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-black/50"></div>
                             {/* Image placeholder */}
-                            <div className="absolute inset-0 bg-gradient-to-br from-trustsec-1 to-trustsec-2 opacity-80"></div>
+                            <div className="absolute inset-0 bg-gradient-to-br from-trustsec-1/80 to-trustsec-2/80"></div>
                         </div>
 
                         {/* Content */}

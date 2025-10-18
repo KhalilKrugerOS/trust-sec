@@ -12,6 +12,7 @@ These are the core TrustSec brand colors extracted from your Figma design:
 | `--trustsec-1` | `#080056` | Deep Navy Blue - Primary Brand | `bg-trustsec-1`, `text-trustsec-1` |
 | `--trustsec-2` | `#114ef6` | Bright Blue - Secondary Brand | `bg-trustsec-2`, `text-trustsec-2` |
 | `--trustsec-3` | `#01d5e1` | Cyan/Turquoise - Accent | `bg-trustsec-3`, `text-trustsec-3` |
+| `--trustsec-widget` | `#272067` | Purple Widget - Dark Mode Cards/Panels | `bg-trustsec-widget`, `text-trustsec-widget` |
 
 ## Usage Examples
 
@@ -81,13 +82,28 @@ Current Tailwind values:
 
 ## Dark Mode
 
-Dark mode automatically uses the TrustSec navy (`#080056`) as the background with cyan (`#01d5e1`) accents.
+Dark mode automatically uses the TrustSec color palette from the Figma design:
+- **Background**: TrustSec Navy (`#080056`)
+- **Cards/Widgets**: TrustSec Widget Purple (`#272067`)
+- **Primary Actions**: TrustSec Blue (`#114ef6`)
+- **Accents**: TrustSec Cyan (`#01d5e1`)
+- **Text**: White with varying opacity
 
 ```tsx
 // Automatically adapts to dark mode
 <div className="bg-background text-foreground">
   Content that works in both light and dark mode
 </div>
+
+// Dark mode card with widget background
+<div className="bg-card rounded-lg p-6 shadow-md">
+  Card content with proper dark mode styling
+</div>
+
+// Using TrustSec colors directly
+<button className="bg-trustsec-2 text-white hover:bg-trustsec-2/90 px-6 py-3 rounded-lg">
+  Primary Action
+</button>
 ```
 
 ## Component Examples from Figma
