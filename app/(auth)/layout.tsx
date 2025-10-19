@@ -14,12 +14,12 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
                 src={BackgroundImage}
                 alt="TrustSec Background"
                 fill
-                className="object-cover -z-10"
+                className="object-cover -z-10 opacity-90"
                 priority
             />
             
             {/* Dark overlay for better contrast */}
-            <div className="absolute inset-0 bg-black/40 -z-10" />
+            <div className="absolute inset-0 bg-black/60 -z-10" />
 
             <Link href="/" className="absolute left-4 top-4 z-20">
                 <NavButton direction="previous" variant="active" />
@@ -36,7 +36,19 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
                     />
                 </Link>
                 {children}
+
+                <div className="text-balance text-center text-xs text-muted-foreground">
+                    By clicking continue, you agree to our{' '}
+                    <Link href="/terms" className="underline underline-offset-4 hover:text-primary">
+                        Terms of Service
+                    </Link>{' '}
+                    and{' '}
+                    <Link href="/privacy" className="underline underline-offset-4 hover:text-primary">
+                        Privacy Policy
+                    </Link>.
+                </div>
             </div>
+
         </div>
     )
 }
