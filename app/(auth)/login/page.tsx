@@ -1,10 +1,36 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, MailIcon } from "lucide-react";
+import { Loader, Mail } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
+import { toast } from "sonner";
+import { useTransition } from "react";
 
 export default function LoginPage() {
+
+    const [isGoogleAuthPending, startGoogleAuthTransition] = useTransition();
+
+    async function handleGoogleSignIn() {
+
+        startGoogleAuthTransition(async () => {
+            await authClient.signIn.social({
+                provider: "google",
+                callbackURL: "/", // Redirect after successful login
+                fetchOptions: {
+                    onSuccess: () => {
+                        toast.success("Successfully signed in with Google!");
+                    },
+                    onError: (error) => {
+                        toast.error("Failed to sign in with Google.", { description: error.error.message });
+                    }
+                }
+            });
+        });
+    };
+
     return (
         <Card className="w-full backdrop-blur-xl bg-card/80 dark:bg-trustsec-widget/80 border-trustsec-3/30 shadow-2xl">
             <CardHeader>
@@ -13,9 +39,21 @@ export default function LoginPage() {
             </CardHeader>
 
             <CardContent className="flex flex-col gap-4">
-                <Button className="w-full " variant="outline">
-                    <Mail className="w-4 h-4" />
-                    Sign in with Google
+                <Button
+                    disabled={isGoogleAuthPending} // Disable button while auth is pending
+                    className="w-full" 
+                    variant="outline"
+                    onClick={handleGoogleSignIn}
+                >
+                    { isGoogleAuthPending ? 
+                        <>
+                           <Loader className="size-4 animate-spin" />
+                        </> : 
+                        <>  
+                            <Mail className="w-4 h-4" />
+                            Sign in with Google
+                        </>
+                    }
                 </Button>
                 <div className="relative text-center text-sm after:absolute
                 after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
