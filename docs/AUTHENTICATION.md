@@ -244,6 +244,10 @@ async function handleGoogleSignIn() {
 8. Session created and stored in database
 9. User redirected to `callbackURL` with session cookie
 
+## Route Protection
+
+Protected routes verify authentication status server-side using Better Auth's session API. The login page checks for existing sessions and redirects authenticated users to prevent duplicate logins. Similarly, protected pages like `/courses` verify the user's session and redirect unauthenticated users to the login page. This is implemented in server components by calling `auth.api.getSession()` with request headers, ensuring server-side session validation before rendering page content.
+
 ## Development Workflow
 
 ### Initial Setup
