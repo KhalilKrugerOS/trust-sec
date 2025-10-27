@@ -8,34 +8,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-export const COURSE_CATEGORIES = [
-  "Introduction to Cybersecurity",
-  "Network Security",
-  "Web Application Security",
-  "Operating System Security",
-  "Cryptography",
-  "Penetration Testing",
-  "Ethical Hacking",
-  "Digital Forensics",
-  "Incident Response",
-  "Malware Analysis",
-  "Reverse Engineering",
-  "Cloud Security",
-  "Mobile Security",
-  "Threat Intelligence",
-  "Security Operations (SOC)",
-  "Red Teaming",
-  "Blue Teaming",
-  "OSINT (Open Source Intelligence)",
-  "Privilege Escalation",
-  "Vulnerability Assessment",
-  "Exploit Development",
-  "Wireless Security",
-  "Social Engineering",
-  "Security Governance & Compliance",
-  "Secure Coding",
-] as const;
-
 
 model User {
   id            String    @id
