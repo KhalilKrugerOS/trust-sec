@@ -7,6 +7,9 @@ import {
 } from "../ui/tooltip";
 import { Toggle } from "../ui/toggle";
 import {
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
   Bold,
   Heading1Icon,
   Heading2Icon,
@@ -14,9 +17,12 @@ import {
   Italic,
   ListIcon,
   ListOrdered,
+  Redo,
   Strikethrough,
+  Undo,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
 
 interface iAppProps {
   editor: Editor | null;
@@ -27,9 +33,9 @@ export function MenuBar({ editor }: iAppProps) {
     return null;
   }
   return (
-    <div>
+    <div className="border border-input rounded-t-lg p-2 bg-card flex flex-wrap gap-1 items-center">
       <TooltipProvider>
-        <div>
+        <div className="flex flex-wrap gap-1">
           <Tooltip>
             <TooltipTrigger asChild>
               <Toggle
@@ -179,6 +185,99 @@ export function MenuBar({ editor }: iAppProps) {
               </Toggle>
             </TooltipTrigger>
             <TooltipContent>Ordered List</TooltipContent>
+          </Tooltip>
+        </div>
+
+        <div className="w-px h-6 bg-border mx-2"></div>
+        <div className="flex flex-wrap gap-1">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Toggle
+                size="sm"
+                pressed={editor.isActive("textAlign", { align: "left" })}
+                onPressedChange={() =>
+                  editor.chain().focus().setTextAlign("left").run()
+                }
+                className={cn(
+                  editor.isActive("textAlign", { align: "left" }) &&
+                    "bg-muted text-muted-foreground"
+                )}
+                //aria-label="Ordered List"
+              >
+                <AlignLeft />
+              </Toggle>
+            </TooltipTrigger>
+            <TooltipContent>Left Align</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Toggle
+                size="sm"
+                pressed={editor.isActive("textAlign", { align: "center" })}
+                onPressedChange={() =>
+                  editor.chain().focus().setTextAlign("center").run()
+                }
+                className={cn(
+                  editor.isActive("textAlign", { align: "center" }) &&
+                    "bg-muted text-muted-foreground"
+                )}
+                //aria-label="Ordered List"
+              >
+                <AlignCenter />
+              </Toggle>
+            </TooltipTrigger>
+            <TooltipContent>Center Align</TooltipContent>
+          </Tooltip>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Toggle
+                size="sm"
+                pressed={editor.isActive("textAlign", { align: "right" })}
+                onPressedChange={() =>
+                  editor.chain().focus().setTextAlign("right").run()
+                }
+                className={cn(
+                  editor.isActive("textAlign", { align: "right" }) &&
+                    "bg-muted text-muted-foreground"
+                )}
+                //aria-label="Ordered List"
+              >
+                <AlignRight />
+              </Toggle>
+            </TooltipTrigger>
+            <TooltipContent>Right Align</TooltipContent>
+          </Tooltip>
+        </div>
+        <div className="w-px h-6 bg-border mx-2"></div>
+        <div className="flex flex-wrap gap-1">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="sm"
+                variant="ghost"
+                type="button"
+                onClick={() => editor.chain().focus().undo().run()}
+                disabled={!editor.can().undo()}
+              >
+                <Undo />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Undo</TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="sm"
+                variant="ghost"
+                type="button"
+                onClick={() => editor.chain().focus().redo().run()}
+                disabled={!editor.can().redo()}
+              >
+                <Redo />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Redo</TooltipContent>
           </Tooltip>
         </div>
       </TooltipProvider>
