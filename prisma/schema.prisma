@@ -8,7 +8,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
   id            String    @id
   name          String
@@ -74,10 +73,10 @@ model Course {
   description      String
   fileKey          String
   price            Float
-  duration         String
+  duration         Int
   level            CourseLevel  @default(BEGINNER)
   isBookmarked     Boolean      @default(false)
-  category         COURSE_CATEGORIES 
+  category         String
   smallDescription String
   slug             String       @unique
   status           CourseStatus @default(DRAFT)

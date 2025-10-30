@@ -1,0 +1,20 @@
+# Docker
+.docker/
+node_modules/
+npm-debug.log
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Environment
+.env
+.env.local
+.env.production
+.env.development
+
+# Misc
+.DS_Store
+*.pem
