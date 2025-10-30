@@ -135,12 +135,12 @@ export default function Hero() {
             {/* Team TrustSec Card */}
             <div className="backdrop-blur-xl bg-white/5 border border-trustsec-3 rounded-3xl p-6 col-span-2">
               <h3 className="text-white font-black text-xl uppercase mb-3">
-                Team TrustSec "
+                Team TrustSec
               </h3>
               <p className="text-white text-base leading-relaxed">
                 Through expert-led courses and practical training, we help
-                learners gain the skills and confidence to succeed in today's
-                digital world.
+                learners gain the skills and confidence to succeed in
+                today&apos;s digital world.
               </p>
             </div>
 

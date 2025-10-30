@@ -20,7 +20,7 @@ export const auth = betterAuth({
   },
   plugins: [
     emailOTP({
-      async sendVerificationOTP({ email, otp }) {
+      async sendVerificationOTP({ otp }) {
         // Implement your email sending logic here
         await resend.emails.send({
           from: "Trust-Sec <onboarding@resend.dev>",

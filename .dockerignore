@@ -9,8 +9,8 @@ out/
 build/
 dist/
 
-# Environment
-.env
+# Environment (commented out to allow .env in build)
+# .env
 .env.local
 .env.production
 .env.development

@@ -94,7 +94,10 @@ export function RenderUploadingState({
 }) {
   return (
     <div className="text-center flex justify-center items-center flex-col">
-      <p className="mt-2 text-sm font-medium text-foreground">Uploading ...</p>
+      <p className="mt-2 text-sm font-medium text-foreground">
+        Uploading ...
+        <span className="font-bold">{progress}%</span>
+      </p>
       <p className="mt-1 text-muted-foreground truncate max-w-xs">
         {file.name}
       </p>

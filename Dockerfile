@@ -3,7 +3,7 @@ FROM node:20-alpine AS base
 
 # Install dependencies only when needed
 FROM base AS deps
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat openssl
 WORKDIR /app
 
 # Install pnpm
@@ -16,6 +16,9 @@ COPY prisma ./prisma/
 # Install dependencies
 RUN pnpm install --frozen-lockfile
 
+# Generate Prisma Client in deps stage
+RUN pnpm prisma generate
+
 # Rebuild the source code only when needed
 FROM base AS builder
 WORKDIR /app
@@ -25,7 +28,7 @@ COPY . .
 # Enable pnpm
 RUN corepack enable pnpm
 
-# Generate Prisma Client
+# Ensure Prisma Client is generated
 RUN pnpm prisma generate
 
 # Build the Next.js app
@@ -39,15 +42,15 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
 
+RUN apk add --no-cache openssl
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy necessary files
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+# Copy standalone output
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 USER nextjs
 

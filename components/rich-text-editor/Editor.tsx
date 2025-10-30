@@ -1,11 +1,15 @@
 "use client";
 
-import { EditorContent, useEditor } from "@tiptap/react";
+import { Editor, EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { MenuBar } from "./MenuBar";
 import TextAlign from "@tiptap/extension-text-align";
 
-export function RichTextEditor({ field }: { field: any }) {
+export function RichTextEditor({
+  field,
+}: {
+  field: { onChange: (value: string) => void; value?: string };
+}) {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -18,7 +22,7 @@ export function RichTextEditor({ field }: { field: any }) {
           "min-h-[300px] focus:outline-none p-4 prose prose-sm sm:prose lg:prose-lg xl:prose-xl dark:prose-invert max-w-none",
       },
     },
-    onUpdate: ({ editor }) => {
+    onUpdate: ({ editor }: { editor: Editor }) => {
       const json = editor.getJSON();
       field.onChange(JSON.stringify(json));
     },

@@ -16,10 +16,10 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useState, useTransition, Suspense } from "react";
 import { toast } from "sonner";
 
-export default function VerifyRequestPage() {
+function VerifyEmailContent() {
   const [otp, setOtp] = useState("");
   const [isOtpPending, startOtpTransition] = useTransition();
   const params = useSearchParams();
@@ -96,5 +96,13 @@ export default function VerifyRequestPage() {
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+export default function VerifyRequestPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

@@ -33,12 +33,12 @@ export async function CreateCourse(
 
     return {
       status: "success",
-      message: "Course created successfully",
+      message: "Course created successfully, " + course.id,
     };
   } catch (error) {
     return {
       status: "error",
-      message: "An unexpected error occurred",
+      message: `An unexpected error occurred, ${error}`,
     };
   }
 }

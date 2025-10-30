@@ -12,8 +12,6 @@ import {
 } from "./RenderState";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
-import Image from "next/image";
-import { env } from "@/lib/env";
 
 interface UploaderState {
   id: string | null;
@@ -44,105 +42,109 @@ export function Uploader({ onChange, value }: iAppProps) {
     fileType: "image",
   });
 
-  async function uploadFile(file: File) {
-    setFileState((prevState) => ({
-      ...prevState,
-      uploading: true,
-      progress: 0,
-    }));
-
-    try {
-      // get presigned url from the server
-      const presignedRespnse = await fetch("/api/s3/upload", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fileName: file.name,
-          contentType: file.type,
-          fileSize: file.size,
-          isImage: true,
-        }),
-      });
-      if (!presignedRespnse.ok) {
-        toast.error("Failed to get presigned URL");
-        setFileState((prevState) => ({
-          ...prevState,
-          uploading: false,
-          progress: 0,
-          error: true,
-        }));
-        return;
-      }
-      const { presignedUrl, key, contentType } = await presignedRespnse.json();
-
-      console.log("🔧 Upload details:", {
-        key,
-        contentType,
-        fileSize: file.size,
-        fileName: file.name,
-      });
-
-      // upload the file to s3 using the presigned url using xhr to track progress
-      // fetch does not support tracking progress
-      // installing axios just for this is overkill
-      // dont change the function to async/await as it will break the progress tracking
-      await new Promise<void>((resolve, reject) => {
-        const xhr = new XMLHttpRequest();
-
-        xhr.upload.onprogress = (event) => {
-          if (event.lengthComputable) {
-            const percentCompleted = (event.loaded / event.total) * 100;
-            setFileState((prevState) => ({
-              ...prevState,
-              progress: Math.round(percentCompleted),
-            }));
-          }
-        };
-        xhr.onload = () => {
-          console.log("📤 XHR Statusss:", xhr.status);
-          console.log("📤 XHR Response:", xhr.responseText);
-
-          onChange?.(key);
-
-          if (xhr.status === 200 || xhr.status === 204) {
-            setFileState((prevState) => ({
-              ...prevState,
-              uploading: false,
-              progress: 100,
-              key,
-            }));
-            toast.success(`File uploaded successfully! Key: ${key}`);
-            resolve();
-          } else {
-            console.error("❌ Upload failed:", xhr.status, xhr.responseText);
-            reject(new Error(`Upload failed with status ${xhr.status}`));
-          }
-        };
-        xhr.onerror = () => {
-          console.error("❌ XHR Error");
-        };
-        xhr.open("PUT", presignedUrl);
-        xhr.setRequestHeader("Content-Type", file.type);
-
-        console.log(
-          "🚀 Starting upload to:",
-          presignedUrl.substring(0, 100) + "..."
-        );
-        xhr.send(file);
-      });
-    } catch (error) {
-      console.error("Upload error:", error);
-      toast.error("An unexpected error occurred");
+  const uploadFile = useCallback(
+    async (file: File) => {
       setFileState((prevState) => ({
         ...prevState,
+        uploading: true,
         progress: 0,
-        uploading: false,
-        error: true,
       }));
-    }
-  }
+
+      try {
+        // get presigned url from the server
+        const presignedRespnse = await fetch("/api/s3/upload", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fileName: file.name,
+            contentType: file.type,
+            fileSize: file.size,
+            isImage: true,
+          }),
+        });
+        if (!presignedRespnse.ok) {
+          toast.error("Failed to get presigned URL");
+          setFileState((prevState) => ({
+            ...prevState,
+            uploading: false,
+            progress: 0,
+            error: true,
+          }));
+          return;
+        }
+        const { presignedUrl, key, contentType } =
+          await presignedRespnse.json();
+
+        console.log("🔧 Upload details:", {
+          key,
+          contentType,
+          fileSize: file.size,
+          fileName: file.name,
+        });
+
+        // upload the file to s3 using the presigned url using xhr to track progress
+        // fetch does not support tracking progress
+        // installing axios just for this is overkill
+        // dont change the function to async/await as it will break the progress tracking
+        await new Promise<void>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+
+          xhr.upload.onprogress = (event) => {
+            if (event.lengthComputable) {
+              const percentCompleted = (event.loaded / event.total) * 100;
+              setFileState((prevState) => ({
+                ...prevState,
+                progress: Math.round(percentCompleted),
+              }));
+            }
+          };
+          xhr.onload = () => {
+            console.log("📤 XHR Statusss:", xhr.status);
+            console.log("📤 XHR Response:", xhr.responseText);
+
+            onChange?.(key);
+
+            if (xhr.status === 200 || xhr.status === 204) {
+              setFileState((prevState) => ({
+                ...prevState,
+                uploading: false,
+                progress: 100,
+                key,
+              }));
+              toast.success(`File uploaded successfully! Key: ${key}`);
+              resolve();
+            } else {
+              console.error("❌ Upload failed:", xhr.status, xhr.responseText);
+              reject(new Error(`Upload failed with status ${xhr.status}`));
+            }
+          };
+          xhr.onerror = () => {
+            console.error("❌ XHR Error");
+          };
+          xhr.open("PUT", presignedUrl);
+          xhr.setRequestHeader("Content-Type", file.type);
+
+          console.log(
+            "🚀 Starting upload to:",
+            presignedUrl.substring(0, 100) + "..."
+          );
+          xhr.send(file);
+        });
+      } catch (error) {
+        console.error("Upload error:", error);
+        toast.error("An unexpected error occurred");
+        setFileState((prevState) => ({
+          ...prevState,
+          progress: 0,
+          uploading: false,
+          error: true,
+        }));
+      }
+    },
+    [onChange]
+  );
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
       if (acceptedFiles.length > 0) {
@@ -165,7 +167,7 @@ export function Uploader({ onChange, value }: iAppProps) {
         uploadFile(file);
       }
     },
-    [fileState.objectUrl]
+    [fileState.objectUrl, uploadFile]
   );
   async function handleRemoveFile() {
     if (fileState.isDeleting || !fileState.objectUrl) return;
