@@ -135,7 +135,7 @@ export default function Hero() {
             {/* Team TrustSec Card */}
             <div className="backdrop-blur-xl bg-white/5 border border-trustsec-3 rounded-3xl p-6 col-span-2">
               <h3 className="text-white font-black text-xl uppercase mb-3">
-                Team TrustSec
+                Team TrustSec "
               </h3>
               <p className="text-white text-base leading-relaxed">
                 Through expert-led courses and practical training, we help
@@ -165,7 +165,7 @@ export default function Hero() {
             </div>
 
             {/* Download App Card - Absolute positioned */}
-            <div className="absolute -right-4 -bottom-16 backdrop-blur-xl bg-white/95 border border-trustsec-3 rounded-2xl p-5 max-w-xs text-center shadow-lg hidden lg:block">
+            {/* <div className="absolute -right-4 -bottom-16 backdrop-blur-xl bg-white/95 border border-trustsec-3 rounded-2xl p-5 max-w-xs text-center shadow-lg hidden lg:block">
               <h3 className="text-trustsec-1 font-black text-lg uppercase mb-3">
                 Download
                 <br />
@@ -185,7 +185,7 @@ export default function Hero() {
                   +10k Downloads
                 </span>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
