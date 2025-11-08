@@ -1,8 +1,19 @@
 import { env } from "@/lib/env";
 import { S3 } from "@/lib/S3Client";
 import { DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
 
 export async function DELETE(req: Request) {
+  // Check authentication
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session || !session.user) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
   const { key } = await req.json();
 
   if (!key) {
