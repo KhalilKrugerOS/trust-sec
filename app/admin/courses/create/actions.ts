@@ -13,22 +13,30 @@ export async function CreateCourse(
     const session = await auth.api.getSession({
       headers: await headers(),
     });
+
+    // Validate session exists
+    if (!session || !session.user || !session.user.id) {
+      return {
+        status: "error",
+        message: "Unauthorized: You must be logged in to create a course",
+      };
+    }
+
     const validation = CourseSchema.safeParse(data);
 
     if (!validation.success) {
+      console.log(validation.error);
       return {
         status: "error",
         message: "Invalid Form data",
       };
     }
 
-    const payload = {
-      ...validation.data,
-      userId: session?.user.id as string,
-    };
-
     const course = await prisma.course.create({
-      data: payload,
+      data: {
+        ...validation.data,
+        userId: session.user.id, // Now guaranteed to be a string
+      },
     });
 
     return {

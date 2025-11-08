@@ -34,11 +34,11 @@ export const CourseSchema = z.object({
   title: z
     .string()
     .min(3, { message: "Title must be at least 3 characters long" })
-    .max(100),
+    .max(255),
   description: z
     .string()
     .min(10, { message: "Description must be at least 10 characters long" })
-    .max(1000),
+    .max(10000),
   fileKey: z.string().min(1, { message: "File key is required" }),
   price: z.coerce
     .number()
@@ -56,12 +56,12 @@ export const CourseSchema = z.object({
     .min(10, {
       message: "Small description must be at least 10 characters long",
     })
-    .max(255),
+    .max(1000),
   slug: z
     .string()
     .min(3, { message: "Slug must be at least 3 characters long" })
-    .max(100),
-  courseStatus: z.enum(CourseStatus, { message: "Course status is required" }),
+    .max(255),
+  status: z.enum(CourseStatus, { message: "Course status is required" }),
 });
 
 export type CourseSchemaType = z.infer<typeof CourseSchema>;

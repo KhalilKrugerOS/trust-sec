@@ -55,7 +55,7 @@ export default function CreateCoursePage() {
       duration: 0,
       price: 0,
       level: "BEGINNER",
-      courseStatus: "DRAFT",
+      status: "DRAFT",
       slug: "",
       smallDescription: "",
       category: "Network Security",
@@ -73,11 +73,11 @@ export default function CreateCoursePage() {
         return;
       }
       if (data?.status === "success") {
-        toast.success(data.message || "Course created successfully");
+        toast.success("Course created successfully");
         form.reset();
         router.push("/admin/courses");
       } else if (data?.status === "error") {
-        toast.error(data?.message || "Failed to create course");
+        toast.error("Failed to create course");
       }
     });
   }
@@ -272,7 +272,7 @@ export default function CreateCoursePage() {
                 />
               </div>
               <FormField
-                name="courseStatus"
+                name="status"
                 control={form.control}
                 render={({ field }) => (
                   <FormItem>
