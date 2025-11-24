@@ -10,6 +10,21 @@ export function RichTextEditor({
 }: {
   field: { onChange: (value: string) => void; value?: string };
 }) {
+  // Helper function to parse content safely
+  const parseContent = (value?: string) => {
+    if (!value) {
+      return `<p>Start writing...</p>`;
+    }
+
+    // Try to parse as JSON first (for Tiptap JSON format)
+    try {
+      return JSON.parse(value);
+    } catch {
+      // If it's not JSON, treat it as plain text or HTML
+      return value;
+    }
+  };
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -26,9 +41,7 @@ export function RichTextEditor({
       const json = editor.getJSON();
       field.onChange(JSON.stringify(json));
     },
-    content: field.value
-      ? JSON.parse(field.value)
-      : `<p>Test Course Trust-Sec 🔥</p>`,
+    content: parseContent(field.value),
   });
 
   return (

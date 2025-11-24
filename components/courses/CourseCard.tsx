@@ -2,14 +2,16 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Clock, Bookmark } from "lucide-react";
 import Link from "next/link";
+import { COURSE_LEVELS, CourseStatus } from "@/lib/zodSchemas";
 
 export type Course = {
   id: string;
   title: string;
-  description: string;
-  level: "Beginner" | "Intermediate" | "Advanced";
-  duration: string;
-  thumbnail: string;
+  smallDescription: string;
+  level: (typeof COURSE_LEVELS)[number];
+  status: (typeof CourseStatus)[number];
+  price: number;
+  fileKey: string;
   isBookmarked?: boolean;
 };
 
@@ -33,7 +35,7 @@ export default function CourseCard({
       {/* Course Thumbnail */}
       <div className="relative h-[260px] overflow-hidden">
         <Image
-          src={course.thumbnail}
+          src={course.fileKey}
           alt={course.title}
           fill
           className="object-cover"
@@ -76,16 +78,16 @@ export default function CourseCard({
 
         {/* Description */}
         <p className="text-muted-foreground text-lg leading-[27px]">
-          {course.description}
+          {course.smallDescription}
         </p>
 
         {/* Duration */}
-        <div className="flex items-center gap-2 mt-auto">
+        {/* <div className="flex items-center gap-2 mt-auto">
           <Clock className="size-5 text-muted-foreground" />
           <span className="text-muted-foreground text-lg">
             {course.duration}
           </span>
-        </div>
+        </div> */}
       </div>
 
       {/* Start Course Button */}

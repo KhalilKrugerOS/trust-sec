@@ -11,33 +11,36 @@ const SAMPLE_COURSES: Course[] = [
   {
     id: "1",
     title: "Introduction to Cybersecurity",
-    description:
+    smallDescription:
       "Learn the fundamentals of cybersecurity, including threat landscapes, risk assessment, and basic security principles.",
-    level: "Beginner",
-    duration: "8 hours",
-    thumbnail:
+    level: "BEGINNER",
+    status: "PUBLISHED",
+    price: 0,
+    fileKey:
       "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&auto=format&fit=crop",
     isBookmarked: true,
   },
   {
     id: "2",
     title: "Network Security Essentials",
-    description:
+    smallDescription:
       "Master network security concepts, protocols, and best practices for securing network infrastructure.",
-    level: "Intermediate",
-    duration: "12 hours",
-    thumbnail:
+    level: "INTERMEDIATE",
+    status: "PUBLISHED",
+    price: 0,
+    fileKey:
       "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&auto=format&fit=crop",
     isBookmarked: false,
   },
   {
     id: "3",
     title: "Ethical Hacking & Penetration Testing",
-    description:
+    smallDescription:
       "Discover ethical hacking techniques, vulnerability assessment, and penetration testing methodologies.",
-    level: "Advanced",
-    duration: "20 hours",
-    thumbnail:
+    level: "ADVANCED",
+    status: "PUBLISHED",
+    price: 0,
+    fileKey:
       "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=800&auto=format&fit=crop",
     isBookmarked: false,
   },
