@@ -1,95 +1,132 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Clock, Bookmark } from "lucide-react";
+import { Edit, Eye, MoreVertical } from "lucide-react";
 import Link from "next/link";
-import { Progress } from "@/components/ui/progress";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+import { getS3PublicUrl } from "@/lib/s3-utils";
+import { AdminCourseType } from "@/app/data/admin/admin-get-courses";
 
-export type AdminCourse = {
-  id: string;
-  title: string;
-  description: string;
-  level: "Beginner" | "Intermediate" | "Advanced";
-  duration: string;
-  thumbnail: string;
-  progress: number; // 0-100
-  isBookmarked?: boolean;
-};
+interface iAppProps {
+  data: AdminCourseType;
+}
 
-type AdminCourseCardProps = {
-  course: AdminCourse;
-};
+export default function AdminCourseCard({ data }: iAppProps) {
+  // Build the S3 public URL from fileKey
+  const imageUrl = getS3PublicUrl(data.fileKey);
 
-export default function AdminCourseCard({ course }: AdminCourseCardProps) {
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "PUBLISHED":
+        return "bg-green-500/10 text-green-500 hover:bg-green-500/20";
+      case "DRAFT":
+        return "bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20";
+      case "ARCHIVED":
+        return "bg-gray-500/10 text-gray-500 hover:bg-gray-500/20";
+      default:
+        return "bg-muted text-muted-foreground";
+    }
+  };
+
+  const getLevelColor = (level: string) => {
+    switch (level) {
+      case "BEGINNER":
+        return "bg-blue-500/10 text-blue-500";
+      case "INTERMEDIATE":
+        return "bg-orange-500/10 text-orange-500";
+      case "ADVANCED":
+        return "bg-red-500/10 text-red-500";
+      default:
+        return "bg-muted text-muted-foreground";
+    }
+  };
+
   return (
-    <div className="bg-trustsec-widget rounded-2xl overflow-hidden h-[700px] flex flex-col shadow-lg">
+    <div className="bg-card rounded-lg overflow-hidden border hover:shadow-lg transition-shadow">
       {/* Course Thumbnail */}
-      <div className="relative h-[260px] overflow-hidden">
+      <div className="relative h-48 overflow-hidden bg-muted">
         <Image
-          src={course.thumbnail}
-          alt={course.title}
+          src={imageUrl}
+          alt={data.title}
           fill
           className="object-cover"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
 
-        {/* Bookmark Icon */}
-        <div className="absolute top-6 left-6">
-          <div className="backdrop-blur-md bg-trustsec-1/90 p-3 rounded-full">
-            <Bookmark
-              className={`size-7 ${
-                course.isBookmarked ? "fill-white text-white" : "text-white"
-              }`}
-            />
-          </div>
+        {/* Status Badge */}
+        <div className="absolute top-3 left-3">
+          <Badge className={getStatusColor(data.status)}>{data.status}</Badge>
         </div>
 
-        {/* Level Badge */}
-        <div className="absolute top-6 right-6">
-          <div className="backdrop-blur-md bg-trustsec-1/90 px-4 py-1 rounded-xl">
-            <span className="text-white font-medium text-base">
-              {course.level}
-            </span>
-          </div>
+        {/* Actions Dropdown */}
+        <div className="absolute top-3 right-3">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button size="icon" variant="secondary" className="size-8">
+                <MoreVertical className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link href={`/admin/courses/${data.id}`}>
+                  <Eye className="size-4 mr-2" />
+                  View Details
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href={`/admin/courses/${data.id}/edit`}>
+                  <Edit className="size-4 mr-2" />
+                  Edit Course
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="text-destructive">
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
       {/* Course Content */}
-      <div className="flex-1 flex flex-col px-8 py-6 gap-3">
-        {/* Title */}
-        <h3 className="font-semibold text-[27px] leading-[38px] text-white">
-          {course.title}
-        </h3>
+      <div className="p-6 space-y-4">
+        {/* Title & Level */}
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <Badge className={getLevelColor(data.level)}>{data.level}</Badge>
+            <span className="text-sm text-muted-foreground">${data.price}</span>
+          </div>
+          <h3 className="font-semibold text-lg line-clamp-2">{data.title}</h3>
+        </div>
 
         {/* Description */}
-        <p className="text-white/80 text-lg leading-[27px]">
-          {course.description}
+        <p className="text-sm text-muted-foreground line-clamp-2">
+          {data.smallDescription}
         </p>
 
-        {/* Duration */}
-        <div className="flex items-center gap-2">
-          <Clock className="size-5 text-white/80" />
-          <span className="text-white/80 text-lg">{course.duration}</span>
+        {/* Actions */}
+        <div className="flex gap-2 pt-2">
+          <Link href={`/admin/courses/${data.id}`} className="flex-1">
+            <Button variant="outline" className="w-full" size="sm">
+              <Eye className="size-4 mr-2" />
+              View
+            </Button>
+          </Link>
+          <Link href={`/admin/courses/${data.id}/edit`} className="flex-1">
+            <Button className="w-full" size="sm">
+              <Edit className="size-4 mr-2" />
+              Edit
+            </Button>
+          </Link>
         </div>
-
-        {/* Progress Section */}
-        <div className="flex flex-col gap-3 mt-auto">
-          <div className="flex items-center justify-between">
-            <span className="text-white text-lg">Progress</span>
-            <span className="text-trustsec-2 font-medium text-lg">
-              {course.progress}%
-            </span>
-          </div>
-          <Progress value={course.progress} className="h-3" />
-        </div>
-      </div>
-
-      {/* Continue Learning Button */}
-      <div className="px-8 pb-8">
-        <Link href={`/courses/${course.id}`} className="block">
-          <Button className="w-full h-14 text-lg font-medium rounded-xl">
-            Continue Learning
-          </Button>
-        </Link>
       </div>
     </div>
   );

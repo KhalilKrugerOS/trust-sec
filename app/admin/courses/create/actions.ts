@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/app/data/admin/require-admin";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { ApiResponse } from "@/lib/types";
@@ -9,19 +10,12 @@ import { headers } from "next/headers";
 export async function CreateCourse(
   data: CourseSchemaType
 ): Promise<ApiResponse> {
+  //const session = await requireAdmin();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-
-    // Validate session exists
-    if (!session || !session.user || !session.user.id) {
-      return {
-        status: "error",
-        message: "Unauthorized: You must be logged in to create a course",
-      };
-    }
-
     const validation = CourseSchema.safeParse(data);
 
     if (!validation.success) {
@@ -35,7 +29,7 @@ export async function CreateCourse(
     const course = await prisma.course.create({
       data: {
         ...validation.data,
-        userId: session.user.id, // Now guaranteed to be a string
+        userId: session?.user.id as string, // Now guaranteed to be a string
       },
     });
 
