@@ -24,6 +24,7 @@ export const env = createEnv({
 
   client: {
     NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES: z.string().min(1),
+    NEXT_PUBLIC_AWS_REGION: z.string().default("us-east-1"),
   },
 
   /**

@@ -12,6 +12,7 @@ import {
 } from "./RenderState";
 import { toast } from "sonner";
 import { v4 as uuidv4 } from "uuid";
+import { getS3PublicUrl } from "@/lib/s3-utils";
 
 interface UploaderState {
   id: string | null;
@@ -37,7 +38,7 @@ export function Uploader({ onChange, value }: iAppProps) {
     progress: 0,
     key: value,
     error: false,
-    objectUrl: undefined,
+    objectUrl: value ? getS3PublicUrl(value) : undefined, // Convert fileKey to URL if exists
     isDeleting: false,
     fileType: "image",
   });
@@ -65,7 +66,10 @@ export function Uploader({ onChange, value }: iAppProps) {
           }),
         });
         if (!presignedRespnse.ok) {
-          toast.error("Failed to get presigned URL");
+          const errorData = await presignedRespnse
+            .json()
+            .catch(() => ({ error: "Failed to get upload URL" }));
+          toast.error(errorData.error || "Failed to get presigned URL");
           setFileState((prevState) => ({
             ...prevState,
             uploading: false,
@@ -74,12 +78,11 @@ export function Uploader({ onChange, value }: iAppProps) {
           }));
           return;
         }
-        const { presignedUrl, key, contentType } =
-          await presignedRespnse.json();
+        const { presignedUrl, key, publicUrl } = await presignedRespnse.json();
 
         console.log("🔧 Upload details:", {
           key,
-          contentType,
+          publicUrl,
           fileSize: file.size,
           fileName: file.name,
         });
@@ -104,16 +107,17 @@ export function Uploader({ onChange, value }: iAppProps) {
             console.log("📤 XHR Statusss:", xhr.status);
             console.log("📤 XHR Response:", xhr.responseText);
 
-            onChange?.(key);
-
             if (xhr.status === 200 || xhr.status === 204) {
+              onChange?.(key);
+
               setFileState((prevState) => ({
                 ...prevState,
                 uploading: false,
                 progress: 100,
                 key,
+                objectUrl: publicUrl, // Use publicUrl from server response
               }));
-              toast.success(`File uploaded successfully! Key: ${key}`);
+              toast.success(`File uploaded successfully!`);
               resolve();
             } else {
               console.error("❌ Upload failed:", xhr.status, xhr.responseText);

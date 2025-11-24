@@ -26,6 +26,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Check if user is admin (for MVP, you might want to allow all authenticated users)
+    // if (session.user.role !== "admin") {
+    //   return NextResponse.json(
+    //     { error: "Admin access required" },
+    //     { status: 403 }
+    //   );
+    // }
+
     const body = await request.json();
     const validation = fileUploadSchema.safeParse(body);
     if (!validation.success) {
@@ -51,9 +59,14 @@ export async function POST(request: Request) {
       expiresIn: 360,
       signableHeaders: new Set(["content-type"]),
     });
+
+    // Build the public S3 URL for preview
+    const publicUrl = `https://${env.NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES}.s3.${env.AWS_REGION}.amazonaws.com/${uniqueKey}`;
+
     const response = {
       presignedUrl,
       key: uniqueKey,
+      publicUrl, // Add public URL for client-side preview
     };
     return NextResponse.json(response);
   } catch (error) {

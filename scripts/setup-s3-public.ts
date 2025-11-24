@@ -1,10 +1,9 @@
 /**
- * Script to configure CORS settings for Tigris S3 bucket
- * Run with: pnpm exec tsx scripts/setup-s3-cors.ts
+ * Script to make S3 bucket publicly readable
+ * Run with: pnpm exec tsx scripts/setup-s3-public.ts
  */
 
-import { S3Client } from "@aws-sdk/client-s3";
-import { PutBucketCorsCommand } from "@aws-sdk/client-s3";
+import { S3Client, PutBucketPolicyCommand } from "@aws-sdk/client-s3";
 import { readFileSync } from "fs";
 import { resolve } from "path";
 
@@ -47,41 +46,39 @@ if (AWS_ENDPOINT_URL_S3) {
 
 const s3Client = new S3Client(s3ClientConfig);
 
-const corsConfiguration = {
-  CORSRules: [
+// Public read policy for the bucket
+const bucketPolicy = {
+  Version: "2012-10-17",
+  Statement: [
     {
-      AllowedHeaders: ["*"],
-      AllowedMethods: ["GET", "PUT", "POST", "DELETE", "HEAD"],
-      AllowedOrigins: [
-        "http://localhost:3000",
-        "http://localhost:3001",
-        // Add your production domain later:
-        // "https://yourdomain.com",
-      ],
-      ExposeHeaders: ["ETag"],
-      MaxAgeSeconds: 3000,
+      Sid: "PublicReadGetObject",
+      Effect: "Allow",
+      Principal: "*",
+      Action: "s3:GetObject",
+      Resource: `arn:aws:s3:::${BUCKET_NAME}/*`,
     },
   ],
 };
 
-async function setupCORS() {
+async function makePublic() {
   try {
-    const command = new PutBucketCorsCommand({
+    const command = new PutBucketPolicyCommand({
       Bucket: BUCKET_NAME,
-      CORSConfiguration: corsConfiguration,
+      Policy: JSON.stringify(bucketPolicy),
     });
 
     await s3Client.send(command);
-    console.log(
-      "✅ CORS configuration successfully applied to bucket:",
-      BUCKET_NAME
-    );
-    console.log("\nCORS Rules:");
-    console.log(JSON.stringify(corsConfiguration, null, 2));
+    console.log("✅ Bucket policy applied successfully!");
+    console.log(`✅ All objects in '${BUCKET_NAME}' are now publicly readable`);
+    console.log("\nBucket Policy:");
+    console.log(JSON.stringify(bucketPolicy, null, 2));
   } catch (error) {
-    console.error("❌ Failed to configure CORS:", error);
+    console.error("❌ Failed to apply bucket policy:", error);
+    console.log(
+      "\n⚠️  If using AWS S3, you may need to disable 'Block Public Access' in the AWS Console first."
+    );
     process.exit(1);
   }
 }
 
-setupCORS();
+makePublic();
