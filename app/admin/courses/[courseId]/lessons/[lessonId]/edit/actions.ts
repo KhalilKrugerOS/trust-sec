@@ -2,6 +2,7 @@
 
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { ApiResponse } from "@/lib/types";
 import { revalidatePath } from "next/cache";
 import { headers } from "next/headers";
 
@@ -13,16 +14,19 @@ interface UpdateLessonData {
   content: string | null;
 }
 
-export async function updateLesson(lessonId: string, data: UpdateLessonData) {
+export async function updateLesson(
+  lessonId: string,
+  data: UpdateLessonData
+): Promise<ApiResponse> {
   try {
     const session = await auth.api.getSession({ headers: await headers() });
 
     if (!session?.user?.id) {
-      return { error: "Not authenticated" };
+      return { status: "error", message: "Not authenticated" };
     }
 
     if (session.user.role !== "admin") {
-      return { error: "Not authorized" };
+      return { status: "error", message: "Not authorized" };
     }
 
     // Verify the lesson exists and belongs to the user's course
@@ -40,11 +44,11 @@ export async function updateLesson(lessonId: string, data: UpdateLessonData) {
     });
 
     if (!existingLesson) {
-      return { error: "Lesson not found" };
+      return { status: "error", message: "Lesson not found" };
     }
 
     if (existingLesson.session.course.userId !== session.user.id) {
-      return { error: "Not authorized to edit this lesson" };
+      return { status: "error", message: "Not authorized to edit this lesson" };
     }
 
     // Update the lesson
@@ -65,9 +69,9 @@ export async function updateLesson(lessonId: string, data: UpdateLessonData) {
       `/admin/courses/${existingLesson.session.courseId}/lessons/${lessonId}/edit`
     );
 
-    return { success: true, lesson: updatedLesson };
+    return { status: "success", message: "Lesson updated successfully" };
   } catch (error) {
     console.error("Error updating lesson:", error);
-    return { error: "Failed to update lesson" };
+    return { status: "error", message: "Failed to update lesson" };
   }
 }

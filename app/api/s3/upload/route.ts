@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Check if user is admin (for MVP, you might want to allow all authenticated users)
+    // Check if user is admin (for MVP, we might want to allow all authenticated users)
     // if (session.user.role !== "admin") {
     //   return NextResponse.json(
     //     { error: "Admin access required" },

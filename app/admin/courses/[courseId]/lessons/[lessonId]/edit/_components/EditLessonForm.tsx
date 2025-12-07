@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -18,12 +18,14 @@ import { Input } from "@/components/ui/input";
 import { AdminLessonType } from "@/app/data/admin/admin-get-lesson";
 import { updateLesson } from "../actions";
 import { toast } from "sonner";
-import { Upload, Video, Image as ImageIcon } from "lucide-react";
+import { Video, Image as ImageIcon } from "lucide-react";
 import { Uploader } from "@/components/file-uploader/Uploader";
 import { RichTextEditor } from "@/components/rich-text-editor/Editor";
 import { useRouter } from "next/navigation";
 
-const LessonSchema = z.object({
+// Using local schema to avoid react-hook-form resolver type issues
+// This matches the lessonUpdateSchema in lib/zodSchemas.ts
+const LessonFormSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
   duration: z.number().min(1, "Duration must be at least 1 minute").nullable(),
   thumbnailKey: z.string().nullable(),
@@ -31,7 +33,7 @@ const LessonSchema = z.object({
   content: z.string().nullable(),
 });
 
-type LessonFormValues = z.infer<typeof LessonSchema>;
+type LessonFormValues = z.infer<typeof LessonFormSchema>;
 
 interface EditLessonFormProps {
   lesson: AdminLessonType;
@@ -46,13 +48,13 @@ export default function EditLessonForm({
   const router = useRouter();
 
   const form = useForm<LessonFormValues>({
-    resolver: zodResolver(LessonSchema),
+    resolver: zodResolver(LessonFormSchema),
     defaultValues: {
       title: lesson.title,
-      duration: lesson.duration,
-      thumbnailKey: lesson.thumbnailKey,
-      videoKey: lesson.videoKey,
-      content: lesson.content,
+      duration: lesson.duration ?? undefined,
+      thumbnailKey: lesson.thumbnailKey ?? undefined,
+      videoKey: lesson.videoKey ?? undefined,
+      content: lesson.content ?? undefined,
     },
   });
 
@@ -60,8 +62,8 @@ export default function EditLessonForm({
     startTransition(async () => {
       const result = await updateLesson(lesson.id, values);
 
-      if (result.error) {
-        toast.error(result.error);
+      if (result.status === "error") {
+        toast.error(result.message);
       } else {
         toast.success("Lesson updated successfully");
         router.push(`/admin/courses/${courseId}/edit?tab=course-structure`);
@@ -126,7 +128,11 @@ export default function EditLessonForm({
                 Lesson Thumbnail
               </FormLabel>
               <FormControl>
-                <Uploader value={field.value ?? ""} onChange={field.onChange} />
+                <Uploader
+                  fileTypeAccepted="image"
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                />
               </FormControl>
               <FormDescription>
                 Upload a thumbnail image for the lesson (max 5MB)
@@ -147,7 +153,11 @@ export default function EditLessonForm({
                 Lesson Video
               </FormLabel>
               <FormControl>
-                <Uploader value={field.value ?? ""} onChange={field.onChange} />
+                <Uploader
+                  fileTypeAccepted="video"
+                  value={field.value ?? ""}
+                  onChange={field.onChange}
+                />
               </FormControl>
               <FormDescription>
                 Upload the video file for this lesson (max 500MB)

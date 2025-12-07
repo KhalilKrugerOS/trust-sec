@@ -34,6 +34,20 @@ import {
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { AdminCourseSingularType } from "@/app/data/admin/admin-get-course";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { saveCourseStructure } from "../actions";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 // Types
 interface Lesson {
@@ -133,14 +147,36 @@ function SortableSession({
           />
         </div>
 
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => onDelete(session.id)}
-          className="text-destructive hover:text-destructive hover:bg-destructive/10"
-        >
-          <Trash2 className="size-4" />
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-destructive hover:text-destructive hover:bg-destructive/10"
+            >
+              <Trash2 className="size-4" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Session</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete this session? This will also
+                delete all {session.lessons.length} lesson(s) within it. This
+                action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => onDelete(session.id)}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
 
       {/* Lessons */}
@@ -277,14 +313,36 @@ function SortableLesson({
         </Link>
       </Button>
 
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => onDelete(sessionId, lesson.id)}
-        className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-      >
-        <Trash2 className="size-3" />
-      </Button>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
+          >
+            <Trash2 className="size-3" />
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Lesson</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete &quot;
+              {lesson.title || "this lesson"}&quot;? This action cannot be
+              undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => onDelete(sessionId, lesson.id)}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
@@ -295,6 +353,7 @@ interface iAppProps {
 
 // Main Component
 export default function CourseStructure({ coursedata }: iAppProps) {
+  const router = useRouter();
   const initialSessions: Session[] = coursedata.courseSessions.map((s) => ({
     id: s.id,
     title: s.title,
@@ -303,7 +362,7 @@ export default function CourseStructure({ coursedata }: iAppProps) {
     lessons: s.lessons.map((l) => ({
       id: l.id,
       title: l.title,
-      type: "video" as const,
+      type: l.type.toLowerCase() as "video" | "reading",
       order: l.order,
       duration: l.duration ?? undefined,
     })),
@@ -330,7 +389,6 @@ export default function CourseStructure({ coursedata }: iAppProps) {
       return reordered.map((item, index) => ({ ...item, order: index }));
     });
   };
-
   const addSession = () => {
     const newSession: Session = {
       id: `session-${Date.now()}`,
@@ -410,12 +468,21 @@ export default function CourseStructure({ coursedata }: iAppProps) {
   };
 
   const saveStructure = async () => {
-    // TODO: Implement save to database
-    console.log("Saving course structure:", {
-      courseId: coursedata.id,
-      sessions,
-    });
-    // This would call a server action to save the structure
+    try {
+      toast.loading("Saving course structure...");
+
+      const result = await saveCourseStructure(coursedata.id, sessions);
+
+      if (result.status === "success") {
+        toast.success(result.message);
+        router.refresh();
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      toast.error("Failed to save course structure");
+      console.error("Save error:", error);
+    }
   };
 
   return (
