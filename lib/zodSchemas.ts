@@ -64,5 +64,53 @@ export const CourseSchema = z.object({
   status: z.enum(CourseStatus, { message: "Course status is required" }),
 });
 
+export const courseSessionSchema = z.object({
+  name: z.string().min(3, {
+    message: "Name must be at least 3 characters long",
+  }),
+  courseId: z.uuid({ message: "Invalid Course Id", version: "v4" }),
+});
+
+export const lessonSchema = z.object({
+  title: z
+    .string()
+    .min(3, { message: "Title must be at least 3 characters long" }),
+  type: z.enum(["VIDEO", "ARTICLE", "QUIZ"], {
+    message: "Invalid lesson type",
+  }),
+  sessionId: z.uuid({ message: "Invalid Session Id", version: "v4" }),
+  courseId: z.uuid({ message: "Invalid Course Id", version: "v4" }),
+  content: z
+    .string()
+    .min(10, { message: "Content must be at least 10 characters long" })
+    .optional(),
+  order: z.coerce
+    .number()
+    .int()
+    .min(1, { message: "Order must be at least 1" }),
+  duration: z.coerce
+    .number()
+    .int()
+    .min(1, { message: "Duration must be at least 1 minute" })
+    .optional(),
+  thumbnailKey: z.string().optional(),
+  videoKey: z.string().optional(),
+});
+
+// Schema for updating a lesson (edit form) - only editable fields
+export const lessonUpdateSchema = z.object({
+  title: z.string().min(3, { message: "Title must be at least 3 characters" }),
+  duration: z
+    .number()
+    .min(1, { message: "Duration must be at least 1 minute" })
+    .nullable(),
+  thumbnailKey: z.string().nullable(),
+  videoKey: z.string().nullable(),
+  content: z.string().nullable(),
+});
+
+export type courseSessionSchemaType = z.infer<typeof courseSessionSchema>;
 export type CourseSchemaType = z.infer<typeof CourseSchema>;
 export type CourseUpdateInput = Partial<CourseSchemaType>;
+export type LessonSchemaType = z.infer<typeof lessonSchema>;
+export type LessonUpdateSchemaType = z.infer<typeof lessonUpdateSchema>;
