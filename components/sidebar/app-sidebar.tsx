@@ -162,6 +162,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   src={Logo}
                   alt="Trust-Sec"
                   className="w-auto h-8"
+                  priority
                   //width={32}
                 />
                 {/* <span className="text-base font-semibold">Trust-Sec.</span> */}

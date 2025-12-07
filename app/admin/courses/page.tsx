@@ -85,14 +85,6 @@ export default async function AdminCoursesPage() {
         <div>
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold">Your Courses</h2>
-            {courses.length === 0 && (
-              <Link href="/admin/courses/create">
-                <Button variant="outline">
-                  <Plus className="size-4 mr-2" />
-                  Create Your First Course
-                </Button>
-              </Link>
-            )}
           </div>
 
           {courses.length === 0 ? (
