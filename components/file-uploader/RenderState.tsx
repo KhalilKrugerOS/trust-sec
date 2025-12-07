@@ -52,21 +52,30 @@ export function RenderUploadedState({
   previewUrl,
   isDeleting,
   handleRemoveFile,
+  fileTypeAccepted,
 }: {
   previewUrl: string;
   isDeleting: boolean;
   handleRemoveFile: () => void;
+  fileTypeAccepted: "image" | "video";
 }) {
   return (
     <div className="text-center">
-      <Image
-        src={previewUrl}
-        alt="Uploaded Image"
-        //width={150}
-        //height={150}
-        fill
-        className="object-contain p-2"
-      />
+      {fileTypeAccepted === "image" ? (
+        <Image
+          src={previewUrl}
+          alt="Uploaded Image"
+          //width={150}
+          //height={150}
+          fill
+          className="object-contain p-2"
+        />
+      ) : (
+        <video controls className="max-h-64 w-full bg-black">
+          <source src={previewUrl} />
+          Your browser does not support the video tag.
+        </video>
+      )}
       <Button
         className={cn("absolute top-4 right-4")}
         variant="destructive"

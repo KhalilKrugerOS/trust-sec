@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Edit, Eye, MoreVertical } from "lucide-react";
+import { Edit, Eye, MoreVertical, Trash2 } from "lucide-react";
 import Link from "next/link";
 import {
   DropdownMenu,
@@ -88,8 +88,11 @@ export default function AdminCourseCard({ data }: iAppProps) {
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">
-                Delete
+              <DropdownMenuItem className="text-destructive" asChild>
+                <Link href={`/admin/courses/${data.id}/delete`}>
+                  <Trash2 className="size-4 mr-2" />
+                  Delete Course
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
