@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Clock, Bookmark } from "lucide-react";
+import { Bookmark } from "lucide-react";
 import Link from "next/link";
 import { COURSE_LEVELS, CourseStatus } from "@/lib/zodSchemas";
+import { getS3PublicUrl } from "@/lib/s3-utils";
 
 export type Course = {
   id: string;
@@ -20,11 +21,37 @@ type CourseCardProps = {
   variant?: "default" | "outlined";
 };
 
+// Placeholder image for courses without valid images
+const PLACEHOLDER_IMAGE = "/placeholder-course.svg";
+
 export default function CourseCard({
   course,
   variant = "default",
 }: CourseCardProps) {
   const isOutlined = variant === "outlined";
+
+  // Get the image URL - use S3 URL if fileKey exists and is valid
+  const getImageUrl = () => {
+    if (!course.fileKey) return PLACEHOLDER_IMAGE;
+    // If it's already a full URL, use it directly
+    if (
+      course.fileKey.startsWith("http://") ||
+      course.fileKey.startsWith("https://")
+    ) {
+      return course.fileKey;
+    }
+    // If it's a placeholder or invalid, use placeholder
+    if (
+      course.fileKey === "placeholder-course-image.jpg" ||
+      !course.fileKey.includes(".")
+    ) {
+      return PLACEHOLDER_IMAGE;
+    }
+    // Otherwise convert to S3 URL
+    return getS3PublicUrl(course.fileKey);
+  };
+
+  const imageUrl = getImageUrl();
 
   return (
     <div
@@ -33,14 +60,22 @@ export default function CourseCard({
       }`}
     >
       {/* Course Thumbnail */}
-      <div className="relative h-[260px] overflow-hidden">
-        <Image
-          src={course.fileKey}
-          alt={course.title}
-          fill
-          className="object-cover"
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
+      <div className="relative h-[260px] overflow-hidden bg-gradient-to-br from-trustsec-2/20 to-trustsec-3/20">
+        {imageUrl !== PLACEHOLDER_IMAGE ? (
+          <Image
+            src={imageUrl}
+            alt={course.title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="text-trustsec-2/50 text-6xl font-bold">
+              {course.title.charAt(0)}
+            </div>
+          </div>
+        )}
 
         {/* Bookmark Icon */}
         <div className="absolute top-6 left-6">
@@ -92,7 +127,7 @@ export default function CourseCard({
 
       {/* Start Course Button */}
       <div className="px-8 pb-8">
-        <Link href={`/courses/${course.id}`} className="block">
+        <Link href={`/courses/${course.id}/learn`} className="block">
           <Button className="w-full h-14 text-lg font-medium rounded-xl">
             Start Course
           </Button>
