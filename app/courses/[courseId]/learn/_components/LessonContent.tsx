@@ -118,8 +118,8 @@ export function LessonContent({
 
           {/* Description / Content */}
           {lesson.content && (
-            <RichTextRenderer 
-              content={lesson.content} 
+            <RichTextRenderer
+              content={lesson.content}
               className="text-base text-slate-600 dark:text-slate-300"
             />
           )}
