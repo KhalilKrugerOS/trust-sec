@@ -11,8 +11,7 @@ export const env = createEnv({
     RESEND_API_KEY: z.string().min(1),
     AWS_ACCESS_KEY_ID: z.string().min(1),
     AWS_SECRET_ACCESS_KEY: z.string().min(1),
-    // AWS_ENDPOINT_URL_S3: z.string().min(1),
-    // AWS_ENDPOINT_URL_IAM: z.string().min(1),
+    AWS_ENDPOINT_URL_S3: z.string().min(1),
     AWS_REGION: z.string().min(1),
   },
 
@@ -24,7 +23,10 @@ export const env = createEnv({
 
   client: {
     NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES: z.string().min(1),
-    NEXT_PUBLIC_AWS_REGION: z.string().default("us-east-1"),
+    NEXT_PUBLIC_AWS_REGION: z.string().default("sbg"),
+    NEXT_PUBLIC_S3_ENDPOINT: z
+      .string()
+      .default("https://s3.sbg.io.cloud.ovh.net"),
   },
 
   /**
