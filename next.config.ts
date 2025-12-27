@@ -23,7 +23,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
-        hostname: "trust-sec-images.s3.us-east-1.amazonaws.com", // Your specific bucket
+        hostname: "eatable-schawlow.s3.sbg.io.cloud.ovh.net", // OVHcloud bucket
+      },
+      {
+        protocol: "https",
+        hostname: "*.s3.sbg.io.cloud.ovh.net", // All OVHcloud SBG buckets
       },
     ],
   },

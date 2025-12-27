@@ -46,22 +46,24 @@ export async function POST(request: Request) {
     const { fileName, contentType, fileSize } = validation.data;
     const uniqueKey = `${uuidv4()}-${fileName}`;
 
-    // Create command with ONLY Bucket and Key
+    // Create command with public-read ACL for OVHcloud
     const command = new PutObjectCommand({
       Bucket: env.NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES,
       ContentType: contentType,
       ContentLength: fileSize,
       Key: uniqueKey,
+      ACL: "public-read", // Make uploaded objects publicly readable
     });
 
     // Use custom S3 client and strip checksum query params
     const presignedUrl = await getSignedUrl(S3, command, {
       expiresIn: 360,
-      signableHeaders: new Set(["content-type"]),
+      signableHeaders: new Set(["content-type", "x-amz-acl"]),
     });
 
-    // Build the public S3 URL for preview
-    const publicUrl = `https://${env.NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES}.s3.${env.AWS_REGION}.amazonaws.com/${uniqueKey}`;
+    // Build the public S3 URL for preview (OVHcloud virtual host format)
+    const endpoint = env.AWS_ENDPOINT_URL_S3 || "https://s3.sbg.io.cloud.ovh.net";
+    const publicUrl = endpoint.replace("https://s3.", `https://${env.NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES}.s3.`) + `/${uniqueKey}`;
 
     const response = {
       presignedUrl,
