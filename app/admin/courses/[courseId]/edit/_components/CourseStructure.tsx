@@ -473,6 +473,7 @@ export default function CourseStructure({ coursedata }: iAppProps) {
 
       const result = await saveCourseStructure(coursedata.id, sessions);
 
+      toast.dismiss();
       if (result.status === "success") {
         toast.success(result.message);
         router.refresh();
@@ -480,6 +481,7 @@ export default function CourseStructure({ coursedata }: iAppProps) {
         toast.error(result.message);
       }
     } catch (error) {
+      toast.dismiss();
       toast.error("Failed to save course structure");
       console.error("Save error:", error);
     }
