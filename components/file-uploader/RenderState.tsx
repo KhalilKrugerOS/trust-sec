@@ -60,14 +60,13 @@ export function RenderUploadedState({
   fileTypeAccepted: "image" | "video";
 }) {
   return (
-    <div className="text-center">
+    <div className="text-center relative w-full h-full">
       {fileTypeAccepted === "image" ? (
         <Image
           src={previewUrl}
           alt="Uploaded Image"
-          //width={150}
-          //height={150}
           fill
+          sizes="(max-width: 768px) 100vw, 400px"
           className="object-contain p-2"
         />
       ) : (
@@ -77,7 +76,7 @@ export function RenderUploadedState({
         </video>
       )}
       <Button
-        className={cn("absolute top-4 right-4")}
+        className={cn("absolute top-4 right-4 z-10")}
         variant="destructive"
         type="button"
         size="icon"
