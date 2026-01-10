@@ -13,15 +13,21 @@ export function getS3PublicUrl(fileKey: string): string {
     return fileKey;
   }
 
-  // Build the S3 URL for OVHcloud (virtual host style)
   const bucket =
-    process.env.NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES || "eatable-schawlow";
-  const endpoint =
-    process.env.NEXT_PUBLIC_S3_ENDPOINT || "https://s3.sbg.io.cloud.ovh.net";
+    process.env.NEXT_PUBLIC_S3_BUCKET_NAME_IMAGES || "trust-sec-images";
+  const region = process.env.NEXT_PUBLIC_AWS_REGION || "eu-north-1";
+  const customEndpoint = process.env.NEXT_PUBLIC_S3_ENDPOINT;
 
-  // OVHcloud virtual host format: https://{bucket}.s3.{region}.io.cloud.ovh.net/{key}
-  // Or path style: https://s3.{region}.io.cloud.ovh.net/{bucket}/{key}
-  // Using virtual host style as shown in OVHcloud dashboard
-  const virtualHost = endpoint.replace("https://s3.", `https://${bucket}.s3.`);
-  return `${virtualHost}/${fileKey}`;
+  // If using custom endpoint (OVH, MinIO, etc.)
+  if (customEndpoint) {
+    // Virtual host format for S3-compatible services
+    const virtualHost = customEndpoint.replace(
+      "https://s3.",
+      `https://${bucket}.s3.`
+    );
+    return `${virtualHost}/${fileKey}`;
+  }
+
+  // Native AWS S3 URL format
+  return `https://${bucket}.s3.${region}.amazonaws.com/${fileKey}`;
 }

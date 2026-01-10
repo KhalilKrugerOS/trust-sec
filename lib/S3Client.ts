@@ -4,9 +4,12 @@ import { S3Client } from "@aws-sdk/client-s3";
 import { env } from "./env";
 
 export const S3 = new S3Client({
-  region: env.AWS_REGION || "sbg",
-  endpoint: env.AWS_ENDPOINT_URL_S3, // OVHcloud S3-compatible endpoint
-  forcePathStyle: true, // Required for S3-compatible services like OVHcloud
+  region: env.AWS_REGION || "eu-north-1",
+  // Only set endpoint for S3-compatible services (OVH, MinIO, etc.)
+  ...(env.AWS_ENDPOINT_URL_S3 && {
+    endpoint: env.AWS_ENDPOINT_URL_S3,
+    forcePathStyle: true, // Required for S3-compatible services
+  }),
   credentials: {
     accessKeyId: env.AWS_ACCESS_KEY_ID,
     secretAccessKey: env.AWS_SECRET_ACCESS_KEY,

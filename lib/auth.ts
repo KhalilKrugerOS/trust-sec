@@ -12,6 +12,8 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql", // or "mysql", "postgresql", ...etc
   }),
+  // Allow both local and server IP origins for auth
+  trustedOrigins: ["http://localhost:3000", "http://16.171.43.133"],
   socialProviders: {
     // google social provider
     google: {
