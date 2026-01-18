@@ -19,6 +19,44 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition, Suspense } from "react";
 import { toast } from "sonner";
 
+/**
+ * ADMIN REDIRECT LOGIC
+ * ====================
+ * After successful OTP verification, we check if the user is an admin.
+ * - Admin users → Always redirect to /admin dashboard
+ * - Regular users → Redirect to intended page or /courses
+ *
+ * This ensures admins land on their management interface while
+ * regular users continue to the courses or their originally intended page.
+ */
+async function getPostLoginRedirect(
+  intendedRedirect?: string | null
+): Promise<string> {
+  const DEFAULT_REDIRECT = "/courses";
+  const ADMIN_REDIRECT = "/admin";
+
+  try {
+    const session = await authClient.getSession();
+    console.log("✅ VerifyEmail - User role:", session.data?.user?.role);
+
+    // Admin users always go to admin dashboard
+    if (session.data?.user?.role === "admin") {
+      console.log("👑 VerifyEmail - Admin user, redirecting to /admin");
+      return ADMIN_REDIRECT;
+    }
+
+    // Regular users go to intended destination or courses
+    console.log(
+      "👤 VerifyEmail - Regular user, redirecting to:",
+      intendedRedirect || DEFAULT_REDIRECT
+    );
+    return intendedRedirect || DEFAULT_REDIRECT;
+  } catch (error) {
+    console.error("❌ VerifyEmail - Error getting session:", error);
+    return intendedRedirect || DEFAULT_REDIRECT;
+  }
+}
+
 function VerifyEmailContent() {
   const [otp, setOtp] = useState("");
   const [isOtpPending, startOtpTransition] = useTransition();
@@ -27,6 +65,9 @@ function VerifyEmailContent() {
   const redirectTo = params.get("redirect");
   const router = useRouter();
 
+  // Debug log
+  console.log("🔄 VerifyEmail - redirect param:", redirectTo);
+
   function verifyEmail() {
     console.log("Verifying email with OTP:", otp, "for email:", email);
     startOtpTransition(async () => {
@@ -34,9 +75,11 @@ function VerifyEmailContent() {
         otp: otp,
         email: email as string,
         fetchOptions: {
-          onSuccess: () => {
+          onSuccess: async () => {
             toast.success("Email verified successfully!");
-            router.push(redirectTo || "/courses");
+            // Check if user is admin and redirect accordingly
+            const finalRedirect = await getPostLoginRedirect(redirectTo);
+            router.push(finalRedirect);
           },
           onError: (error) => {
             toast.error("Failed to verify email.", {

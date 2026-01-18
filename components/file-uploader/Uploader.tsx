@@ -130,7 +130,6 @@ export function Uploader({ onChange, value, fileTypeAccepted }: iAppProps) {
           };
           xhr.open("PUT", presignedUrl);
           xhr.setRequestHeader("Content-Type", file.type);
-          xhr.setRequestHeader("x-amz-acl", "public-read"); // Set public-read ACL
 
           console.log(
             "🚀 Starting upload to:",

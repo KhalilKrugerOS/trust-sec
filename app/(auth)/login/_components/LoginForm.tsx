@@ -26,8 +26,23 @@ export default function LoginForm({ redirectTo }: LoginFormProps) {
   const [isGoogleAuthPending, startGoogleAuthTransition] = useTransition();
   const [isEmailAuthPending, startEmailAuthTransition] = useTransition(); // use Transition is useful for pending states
 
-  // Default redirect to /courses if not specified
-  const callbackURL = redirectTo || "/courses";
+  /**
+   * CALLBACK URL STRATEGY
+   * =====================
+   * Instead of redirecting directly to the intended page,
+   * we go through /auth/post-login which:
+   * 1. Checks if user is admin → redirects to /admin
+   * 2. Otherwise → redirects to intended page or /courses
+   *
+   * This allows role-based redirects after OAuth completes.
+   */
+  const callbackURL = redirectTo
+    ? `/auth/post-login?redirect=${encodeURIComponent(redirectTo)}`
+    : `/auth/post-login`;
+
+  // Debug: Log redirect values
+  console.log("🔄 LoginForm redirectTo prop:", redirectTo);
+  console.log("🔄 LoginForm callbackURL:", callbackURL);
 
   async function handleGoogleSignIn() {
     startGoogleAuthTransition(async () => {
