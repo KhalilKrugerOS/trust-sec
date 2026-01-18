@@ -32,11 +32,15 @@ export async function getSession() {
 /**
  * Require authentication and return user session
  * Redirects to login if not authenticated
+ * @param redirectPath - Optional path to redirect to after login
  */
-export async function requireAuth() {
+export async function requireAuth(redirectPath?: string) {
   const session = await getSession();
   if (!session) {
-    redirect("/login");
+    const loginUrl = redirectPath
+      ? `/login?redirect=${encodeURIComponent(redirectPath)}`
+      : "/login";
+    redirect(loginUrl);
   }
   return session;
 }

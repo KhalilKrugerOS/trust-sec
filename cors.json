@@ -3,8 +3,17 @@
     {
       "AllowedHeaders": ["*"],
       "AllowedMethods": ["GET", "PUT", "POST", "DELETE", "HEAD"],
-      "AllowedOrigins": ["http://localhost:3000", "https://localhost:3000"],
-      "ExposeHeaders": ["ETag", "Content-Length", "Content-Type", "Access-Control-Allow-Origin"]
+      "AllowedOrigins": [
+        "http://localhost:3000",
+        "https://localhost:3000",
+        "https://trustsecacademy.com"
+      ],
+      "ExposeHeaders": [
+        "ETag",
+        "Content-Length",
+        "Content-Type",
+        "Access-Control-Allow-Origin"
+      ]
     }
   ]
 }

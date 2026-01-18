@@ -13,7 +13,11 @@ export const auth = betterAuth({
     provider: "postgresql", // or "mysql", "postgresql", ...etc
   }),
   // Allow both local and server IP origins for auth
-  trustedOrigins: ["http://localhost:3000", "http://16.171.43.133"],
+  trustedOrigins: [
+    "http://localhost:3000",
+    "https://trustsecacademy.com",
+    "https://www.trustsecacademy.com",
+  ],
   socialProviders: {
     // google social provider
     google: {

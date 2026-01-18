@@ -21,14 +21,6 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "*.s3.*.amazonaws.com", // Allow all S3 buckets
       },
-      {
-        protocol: "https",
-        hostname: "eatable-schawlow.s3.sbg.io.cloud.ovh.net", // OVHcloud bucket
-      },
-      {
-        protocol: "https",
-        hostname: "*.s3.sbg.io.cloud.ovh.net", // All OVHcloud SBG buckets
-      },
     ],
   },
 };
