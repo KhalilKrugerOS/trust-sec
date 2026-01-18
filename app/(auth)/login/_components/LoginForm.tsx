@@ -16,17 +16,24 @@ import { toast } from "sonner";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 
-export default function LoginForm() {
+interface LoginFormProps {
+  redirectTo?: string;
+}
+
+export default function LoginForm({ redirectTo }: LoginFormProps) {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [isGoogleAuthPending, startGoogleAuthTransition] = useTransition();
   const [isEmailAuthPending, startEmailAuthTransition] = useTransition(); // use Transition is useful for pending states
 
+  // Default redirect to /courses if not specified
+  const callbackURL = redirectTo || "/courses";
+
   async function handleGoogleSignIn() {
     startGoogleAuthTransition(async () => {
       await authClient.signIn.social({
         provider: "google",
-        callbackURL: "/courses", // Redirect after successful login
+        callbackURL, // Redirect after successful login
         fetchOptions: {
           onSuccess: () => {
             toast.success("Successfully signed in with Google!");
@@ -52,7 +59,12 @@ export default function LoginForm() {
               description: `Check your inbox for a verification link.`,
             });
             // setEmail(""); // Optionally clear email input
-            router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+            const verifyUrl = `/verify-email?email=${encodeURIComponent(
+              email
+            )}${
+              redirectTo ? `&redirect=${encodeURIComponent(redirectTo)}` : ""
+            }`;
+            router.push(verifyUrl);
           },
           onError: (error) => {
             toast.error("Failed to send verification email.", {

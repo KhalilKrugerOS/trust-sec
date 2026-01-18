@@ -24,6 +24,7 @@ function VerifyEmailContent() {
   const [isOtpPending, startOtpTransition] = useTransition();
   const params = useSearchParams();
   const email = params.get("email");
+  const redirectTo = params.get("redirect");
   const router = useRouter();
 
   function verifyEmail() {
@@ -35,7 +36,7 @@ function VerifyEmailContent() {
         fetchOptions: {
           onSuccess: () => {
             toast.success("Email verified successfully!");
-            router.push("/courses");
+            router.push(redirectTo || "/courses");
           },
           onError: (error) => {
             toast.error("Failed to verify email.", {
