@@ -19,6 +19,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "trust-sec-s3.s3.eu-north-1.amazonaws.com",
+      },
+      {
+        protocol: "https",
         hostname: "*.s3.*.amazonaws.com", // Allow all S3 buckets
       },
     ],
